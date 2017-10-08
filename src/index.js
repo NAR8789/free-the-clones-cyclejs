@@ -1,6 +1,5 @@
 import {run} from '@cycle/run'
 import {div, span, makeDOMDriver} from '@cycle/dom'
-import { compose } from 'pointfree-fantasy'
 
 // intent
 const propagation = (propagationClick) =>
@@ -8,9 +7,9 @@ const propagation = (propagationClick) =>
 
 // model
 const ensureSpace = (board, [i, j]) => {
-  if (i >= board.length) {
+  if (board.length <= i) {
     return ensureSpace([...board, []], [i, j])
-  } else if (j >= board[i].length) {
+  } else if (board[i].length <= j) {
     return ensureSpace([
       ...board.slice(0, i),
       [...board[i], false],
@@ -25,58 +24,61 @@ const ensureSpaces = (board, ...locations) =>
   locations.reduce(ensureSpace, board)
 
 const propagate = (board, [i, j]) => {
-  if (!clonable(board, i, j)) { return board }
+  if (!clonable(board, [i, j])) { return board }
 
-  return ensureSpaces(board, [i + 1, j], [i, j + 1], [i + 1, j + 1])
-    .map((row, x) => row.map((pebble, y) => {
-      if (x === i && y === j) {
-        return false
-      } else if (x === i && y === j + 1) {
-        return true
-      } else if (x === i + 1 && y === j) {
-        return true
-      } else {
-        return pebble
-      }
-    }))
+  return ensureSpaces(board,
+    [i + 1, j],
+    [i, j + 1],
+    [i + 1, j + 1]
+  ).map((row, x) => row.map((pebble, y) => {
+    if (x === i && y === j) {
+      return false
+    } else if (x === i && y === j + 1) {
+      return true
+    } else if (x === i + 1 && y === j) {
+      return true
+    } else {
+      return pebble
+    }
+  }))
 }
 
-// viewModel
-const hasPebble = (board, i, j) => board[i] && board[i][j]
+// presenter
+const hasPebble = (board, [i, j]) => board[i] && board[i][j]
 
-const clonable = (board, i, j) =>
-  hasPebble(board, i, j) &&
-  !hasPebble(board, i, j + 1) &&
-  !hasPebble(board, i + 1, j)
+const clonable = (board, [i, j]) =>
+  hasPebble(board, [i, j]) &&
+  !hasPebble(board, [i, j + 1]) &&
+  !hasPebble(board, [i + 1, j])
 
-const augmentedBoard = (board) =>
+const boardPresenter = (board) =>
   board.map((row, i) => row.map((pebble, j) =>
-    ({ pebble, clonable: clonable(board, i, j), location: [i, j] })
+    ({ pebble, clonable: clonable(board, [i, j]), location: [i, j] })
   ))
 
 // view
-const displayBoard = (augmentedBoard) =>
-  div('.board', augmentedBoard.map(row =>
+const boardDOM = (boardPresenter) =>
+  div('.board', boardPresenter.map(row =>
     div('.row', row.map(({ pebble, clonable, location: [i, j] }) =>
       span('.square.fa-circle', {
         class: { pebble, clonable },
-        attrs: { 'data-i': i, 'data-j': j, 'data-location': [i, j] }
+        attrs: { 'data-i': i, 'data-j': j }
       })
     ))
   ))
 
 const main = (sources) => {
-  const propagationClicks$ = sources.DOM.select('.pebble.clonable').events('click')
-  const propagations$ = propagationClicks$.map(propagation)
-  const board$ = propagations$
-    .fold(propagate, [
-      [true, true],
-      [true, false]
-    ])
-
-  const vdom$ = board$.map(compose(displayBoard, augmentedBoard))
+  const propagationClick$ = sources.DOM.select('.pebble.clonable').events('click')
+  const propagation$ = propagationClick$.map(propagation)
+  const board$ = propagation$
+    .fold(propagate,
+      [ [true, true],
+        [true, false] ]
+    )
+  const boardPresenter$ = board$.map(boardPresenter)
+  const boardDOM$ = boardPresenter$.map(boardDOM)
   return {
-    DOM: vdom$
+    DOM: boardDOM$
   }
 }
 
