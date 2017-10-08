@@ -1,10 +1,10 @@
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
 
-import { propagation } from './intent'
-import { propagate } from './model'
-import { boardPresenter } from './presenter'
-import { boardDOM } from './view'
+import { propagation } from 'intent'
+import { propagate } from 'model'
+import { boardPresenter } from 'presenter'
+import { boardDOM } from 'view'
 
 const main = (sources) => {
   const propagationClick$ = sources.DOM.select('.pebble.clonable').events('click')
