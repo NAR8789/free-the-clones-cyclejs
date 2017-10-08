@@ -9,3 +9,5 @@ export const boardDOM = (boardPresenter) =>
       })
     ))
   ))
+
+export const getPropagationClick$ = (domSource) => domSource.select('.pebble.clonable').events('click')
