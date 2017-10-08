@@ -1,4 +1,3 @@
-import xs from 'xstream'
 import {run} from '@cycle/run'
 import {div, span, makeDOMDriver} from '@cycle/dom'
 import { compose } from 'pointfree-fantasy'
@@ -26,19 +25,18 @@ const ensureSpaces = (board, ...locations) =>
   locations.reduce(ensureSpace, board)
 
 const propagate = (board, [i, j]) => {
-  console.log('propagate', board, [i, j])
   if (!clonable(board, i, j)) { return board }
 
   return ensureSpaces(board, [i + 1, j], [i, j + 1], [i + 1, j + 1])
     .map((row, x) => row.map((pebble, y) => {
-      switch ([x, y]) {
-        case [i, j]:
-          return false
-        case [i, j + 1]:
-        case [i + 1, j]:
-          return true
-        default:
-          return pebble
+      if (x === i && y === j) {
+        return false
+      } else if (x === i && y === j + 1) {
+        return true
+      } else if (x === i + 1 && y === j) {
+        return true
+      } else {
+        return pebble
       }
     }))
 }
@@ -66,8 +64,6 @@ const displayBoard = (augmentedBoard) =>
       })
     ))
   ))
-
-window.compose = compose
 
 const main = (sources) => {
   const propagationClicks$ = sources.DOM.select('.pebble.clonable').events('click')
