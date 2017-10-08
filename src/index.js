@@ -3,7 +3,7 @@ import { makeDOMDriver } from '@cycle/dom'
 
 import { propagationClick$ as getPropagationClick$ } from 'board/event'
 import { propagation } from 'board/intent'
-import { propagate } from 'board/model'
+import { propagate } from 'board/mutation'
 import { boardPresenter } from 'board/presenter'
 import { boardDOM } from 'board/view'
 

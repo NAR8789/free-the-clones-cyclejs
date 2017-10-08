@@ -1,9 +1,4 @@
-const hasPebble = (board, [i, j]) => board[i] && board[i][j]
-
-export const clonable = (board, [i, j]) =>
-  hasPebble(board, [i, j]) &&
-  !hasPebble(board, [i, j + 1]) &&
-  !hasPebble(board, [i + 1, j])
+import { clonable } from './presenter'
 
 const ensureSpace = (board, [i, j]) => {
   if (board.length <= i) {
