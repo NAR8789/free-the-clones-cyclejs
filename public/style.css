@@ -1,0 +1,30 @@
+.square {
+  color: transparent;
+  border: solid lightgray;
+  border-width: 1px 0 0 1px;
+  font-size: 200%;
+  height: 1em;
+  width: 1em;
+  text-align: center;
+
+  /* usually provided by `fa` class */
+  display: inline-block;
+  line-height: 1em;
+  font-family: FontAwesome;
+}
+
+.row:last-of-type .square {
+  border-bottom-width: 1px;
+}
+
+.square:last-of-type {
+  border-right-width: 1px;
+}
+
+.square.pebble.clonable {
+  color: red;
+}
+
+.square.pebble {
+  color: rgba(255, 0, 0, 0.5);
+}

@@ -13,4 +13,7 @@ module.exports = {
     new WebpackNotifierPlugin(),
   ],
   devtool: 'source-map',
+  devServer: {
+    contentBase: [path.join(__dirname, 'dist'), path.join(__dirname, 'public')],
+  },
 }
