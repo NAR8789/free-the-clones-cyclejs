@@ -1,6 +1,7 @@
 const path = require('path')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
@@ -9,6 +10,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
+    new CleanWebpackPlugin(['dist']),
     new ProgressBarPlugin(),
     new WebpackNotifierPlugin(),
   ],
