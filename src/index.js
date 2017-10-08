@@ -1,10 +1,23 @@
 import xs from 'xstream'
 import {run} from '@cycle/run'
-import {p, makeDOMDriver} from '@cycle/dom'
+import {div, span, makeDOMDriver} from '@cycle/dom'
 
-const main = (whee) => {
+const main = (sources) => {
+  const board$ = xs.from(
+    [[
+      [true, true],
+      [true, false]
+    ]])
+
+  const vdom$ = board$.map(
+    board => div('.board', board.map(
+      row => div('.row', row.map(
+        square => span('.square.fa-circle', { class: { pebble: square } })
+      ))
+    ))
+  )
   return {
-    DOM: xs.from([p('hello world!')])
+    DOM: vdom$
   }
 }
 
