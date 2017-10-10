@@ -1,4 +1,4 @@
-import {div, span} from '@cycle/dom'
+import { div, span } from '@cycle/dom'
 
 export const boardDOM = (boardPresenter) =>
   div('.board', boardPresenter.map(row =>

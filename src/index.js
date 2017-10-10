@@ -1,3 +1,4 @@
+import xs from 'xstream'
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
 
@@ -6,6 +7,11 @@ import { propagation } from 'board/intent'
 import { propagate } from 'board/mutation'
 import { boardPresenter } from 'board/presenter'
 import { boardDOM } from 'board/view'
+
+import { recordMove } from 'move-history/mutation'
+import { moveHistoryDOM } from 'move-history/view'
+
+import { combinedDOM } from 'view'
 
 const main = (sources) => {
   const propagationClick$ = getPropagationClick$(sources.DOM)
@@ -17,8 +23,16 @@ const main = (sources) => {
     )
   const boardPresenter$ = board$.map(boardPresenter)
   const boardDOM$ = boardPresenter$.map(boardDOM)
+
+  const moveHistory$ = propagation$
+    .fold(recordMove, [])
+  const moveHistoryDOM$ = moveHistory$.map(moveHistoryDOM)
+
+  const combinedDOM$ = xs.combine(boardDOM$, moveHistoryDOM$)
+    .map(combinedDOM).remember()
+
   return {
-    DOM: boardDOM$
+    DOM: combinedDOM$
   }
 }
 
