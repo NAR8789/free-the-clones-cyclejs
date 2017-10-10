@@ -1,24 +1,13 @@
-import { merge } from 'lodash'
 import xs from 'xstream'
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
+
+import { mergeMutationBundles, localizeMutationBundle, delocalizeStates } from 'state-helpers'
 
 import { board as boardController } from 'board'
 import { moveHistory as moveHistoryController } from 'move-history'
 
 import { combinedDOM } from 'view'
-
-const localizeReducer$ = (reducer$, namespace) => reducer$.map(localizeReducer(namespace))
-const localizeReducer = namespace => reducer => state => Object.assign(state, { [namespace]: reducer(state[namespace]) })
-const localizeMutationBundle = ({reducer$, initialState}, namespace) => ({
-  reducer$: localizeReducer$(reducer$, namespace),
-  initialState: { [namespace]: initialState },
-})
-const mergeMutationBundles = (...mutationBundles) => ({
-  reducer$: xs.merge(...mutationBundles.map(({reducer$}) => reducer$)),
-  initialState: merge({}, ...mutationBundles.map(({initialState}) => initialState))
-})
-const delocalizeStates = (namespace, { state$ }) => ({ state$: state$.map(({ [namespace]: subState }) => subState) })
 
 const main1 = (sources) => {
   const board1 = boardController.main1(sources)
