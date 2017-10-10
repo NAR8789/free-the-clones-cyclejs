@@ -7,12 +7,23 @@ import { moveHistory as moveHistoryController } from 'move-history'
 
 import { combinedDOM } from 'view'
 
+const localizeReducer = namespace => reducer => state => Object.assign(state, { [namespace]: reducer(state[namespace]) })
+
 const main = (sources) => {
   const board1 = boardController.main1(sources)
   const moveHistory1 = moveHistoryController.main1(board1)
 
-  const board$ = board1.reducer$.fold((board, reducer) => reducer(board), board1.initialState)
-  const moveHistory$ = moveHistory1.reducer$.fold((moveHistory, reducer) => reducer(moveHistory), moveHistory1.initialState)
+  const reducer$ = xs.merge(
+    board1.reducer$.map(localizeReducer('board')),
+    moveHistory1.reducer$.map(localizeReducer('moveHistory'))
+  )
+  const state$ = reducer$.fold((board, reducer) => reducer(board), {
+    board: board1.initialState,
+    moveHistory: moveHistory1.initialState
+  })
+
+  const board$ = state$.map(({ board }) => board)
+  const moveHistory$ = state$.map(({ moveHistory }) => moveHistory)
 
   const board2 = boardController.main2({ board$ })
   const moveHistory2 = moveHistoryController.main2({ moveHistory$ })
