@@ -12,7 +12,7 @@ const main = (sources) => {
   const moveHistory1 = moveHistoryController.main1(board1)
 
   const board$ = board1.reducer$.fold((board, reducer) => reducer(board), board1.initialState)
-  const moveHistory$ = moveHistory1.reducer$.fold((moveHistory, reducer) => reducer(moveHistory), [])
+  const moveHistory$ = moveHistory1.reducer$.fold((moveHistory, reducer) => reducer(moveHistory), moveHistory1.initialState)
 
   const board2 = boardController.main2({ board$ })
   const moveHistory2 = moveHistoryController.main2({ moveHistory$ })
