@@ -9,9 +9,12 @@ import { combinedDOM } from 'view'
 
 const main = (sources) => {
   const board = boardController(sources)
-  const moveHistory = moveHistoryController(board)
 
-  const combinedDOM$ = xs.combine(board.DOM, moveHistory.DOM)
+  const moveHistory1 = moveHistoryController.main1(board)
+  const moveHistory$ = moveHistory1.reducer$.fold((moveHistory, reducer) => reducer(moveHistory), [])
+  const moveHistory2 = moveHistoryController.main2({ moveHistory$ })
+
+  const combinedDOM$ = xs.combine(board.DOM, moveHistory2.DOM)
     .map(combinedDOM).remember()
 
   return {

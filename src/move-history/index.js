@@ -1,11 +1,13 @@
-import { recordMove } from 'move-history/mutation'
+import { curriedRecordMove } from 'move-history/mutation'
 import { moveHistoryDOM } from 'move-history/view'
 
-export const moveHistory = (sources) => {
-  const moveHistory$ = sources.propagation$.fold(recordMove, [])
-  const moveHistoryDOM$ = moveHistory$.map(moveHistoryDOM)
+export const moveHistory = {
+  main1: (sources) => ({ reducer$: sources.propagation$.map(curriedRecordMove) }),
+  main2: (states) => {
+    const moveHistoryDOM$ = states.moveHistory$.map(moveHistoryDOM)
 
-  return {
-    DOM: moveHistoryDOM$
-  }
+    return {
+      DOM: moveHistoryDOM$,
+    }
+  },
 }
