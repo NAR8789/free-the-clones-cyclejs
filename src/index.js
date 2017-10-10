@@ -9,7 +9,7 @@ import { combinedDOM } from 'view'
 
 const main = (sources) => {
   const board = boardController(sources)
-  const moveHistory = moveHistoryController(board.propagation$)
+  const moveHistory = moveHistoryController(board)
 
   const combinedDOM$ = xs.combine(board.DOM, moveHistory.DOM)
     .map(combinedDOM).remember()
