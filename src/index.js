@@ -41,6 +41,4 @@ const drivers = {
   DOM: makeDOMDriver('#free-the-clones'),
 }
 
-window.xs = xs
-
 run(main, drivers)
