@@ -1,6 +1,6 @@
-import { div } from '@cycle/dom'
+import { ol, li } from '@cycle/dom'
 
 export const moveHistoryDOM = (moveHistory) =>
-  div('.moves', moveHistory.map(move =>
-    div('move', JSON.stringify(move))
+  ol('.moves', moveHistory.map(move =>
+    li('.move', JSON.stringify(move))
   ))
