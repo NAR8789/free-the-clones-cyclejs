@@ -36,3 +36,5 @@ export const propagate = (board, [i, j]) => {
     }
   }))
 }
+
+export const curriedPropagate = ([i, j]) => (board) => propagate(board, [i, j])
