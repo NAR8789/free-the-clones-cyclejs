@@ -11,11 +11,7 @@ const main = (sources) => {
   const board1 = boardController.main1(sources)
   const moveHistory1 = moveHistoryController.main1(board1)
 
-  const board$ = board1.reducer$
-    .fold((board, reducer) => reducer(board),
-      [ [true, true],
-        [true, false] ]
-    )
+  const board$ = board1.reducer$.fold((board, reducer) => reducer(board)).filter(x => typeof x !== 'undefined')
   const moveHistory$ = moveHistory1.reducer$.fold((moveHistory, reducer) => reducer(moveHistory), [])
 
   const board2 = boardController.main2({ board$ })
@@ -32,5 +28,7 @@ const main = (sources) => {
 const drivers = {
   DOM: makeDOMDriver('#free-the-clones'),
 }
+
+window.xs = xs
 
 run(main, drivers)
