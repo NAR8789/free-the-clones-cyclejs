@@ -17,7 +17,7 @@ const ensureSpace = (board, [i, j]) => {
 const ensureSpaces = (board, ...locations) =>
   locations.reduce(ensureSpace, board)
 
-export const propagate = (board, [i, j]) => {
+export const propagate = ([i, j]) => (board) => {
   if (!clonable(board, [i, j])) { return board }
 
   return ensureSpaces(board,
@@ -36,5 +36,3 @@ export const propagate = (board, [i, j]) => {
     }
   }))
 }
-
-export const curriedPropagate = ([i, j]) => (board) => propagate(board, [i, j])

@@ -1,6 +1,6 @@
 import { propagationClick$ as getPropagationClick$ } from 'board/event'
 import { propagation } from 'board/intent'
-import { curriedPropagate } from 'board/mutation'
+import { propagate } from 'board/mutation'
 import { boardPresenter } from 'board/presenter'
 import { boardDOM } from 'board/view'
 
@@ -8,7 +8,7 @@ export const board = {
   main1: (sources) => {
     const propagationClick$ = getPropagationClick$(sources.DOM)
     const propagation$ = propagationClick$.map(propagation)
-    const reducer$ = propagation$.map(curriedPropagate)
+    const reducer$ = propagation$.map(propagate)
     const initialState =
       [ [true, true],
         [true, false] ]
