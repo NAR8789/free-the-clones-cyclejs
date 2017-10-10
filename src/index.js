@@ -10,7 +10,7 @@ import { combinedDOM } from 'view'
 const localizeReducer = namespace => reducer => state => Object.assign(state, { [namespace]: reducer(state[namespace]) })
 const delocalizeState = (namespace, state$) => state$.map(({ [namespace]: subState }) => subState)
 
-const main = (sources) => {
+const main1 = (sources) => {
   const board1 = boardController.main1(sources)
   const moveHistory1 = moveHistoryController.main1(board1)
 
@@ -18,11 +18,19 @@ const main = (sources) => {
     board1.reducer$.map(localizeReducer('board')),
     moveHistory1.reducer$.map(localizeReducer('moveHistory'))
   )
-  const state$ = reducer$.fold((board, reducer) => reducer(board), {
+
+  const initialState = {
     board: board1.initialState,
     moveHistory: moveHistory1.initialState
-  })
+  }
 
+  return {
+    reducer$,
+    initialState
+  }
+}
+
+const main2 = ({ state$ }) => {
   const board$ = delocalizeState('board', state$)
   const moveHistory$ = delocalizeState('moveHistory', state$)
 
@@ -35,6 +43,12 @@ const main = (sources) => {
   return {
     DOM: combinedDOM$
   }
+}
+
+const main = (sources) => {
+  const { reducer$, initialState } = main1(sources)
+  const state$ = reducer$.fold((board, reducer) => reducer(board), initialState)
+  return main2({ state$ })
 }
 
 const drivers = {
