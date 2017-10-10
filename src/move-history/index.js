@@ -7,7 +7,7 @@ export const moveHistory = {
     initialState: [],
   }),
   main2: (states) => {
-    const moveHistoryDOM$ = states.moveHistory$.map(moveHistoryDOM)
+    const moveHistoryDOM$ = states.state$.map(moveHistoryDOM)
 
     return {
       DOM: moveHistoryDOM$,

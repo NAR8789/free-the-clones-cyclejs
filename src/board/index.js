@@ -20,7 +20,7 @@ export const board = {
     }
   },
   main2: (states) => {
-    const boardPresenter$ = states.board$.map(boardPresenter)
+    const boardPresenter$ = states.state$.map(boardPresenter)
     const boardDOM$ = boardPresenter$.map(boardDOM)
 
     return {
