@@ -8,16 +8,15 @@ export const board = {
   main1: (sources) => {
     const propagationClick$ = getPropagationClick$(sources.DOM)
     const propagation$ = propagationClick$.map(propagation)
-    const reducer$ = propagation$
-      .map(curriedPropagate)
-      .startWith(() => [
-        [true, true],
-        [true, false]
-      ])
+    const reducer$ = propagation$.map(curriedPropagate)
+    const initialState =
+      [ [true, true],
+        [true, false] ]
 
     return {
       propagation$,
-      reducer$
+      reducer$,
+      initialState,
     }
   },
   main2: (states) => {
