@@ -8,6 +8,7 @@ import { moveHistory as moveHistoryController } from 'move-history'
 import { combinedDOM } from 'view'
 
 const localizeReducer = namespace => reducer => state => Object.assign(state, { [namespace]: reducer(state[namespace]) })
+const delocalizeState = (namespace, state$) => state$.map(({ [namespace]: subState }) => subState)
 
 const main = (sources) => {
   const board1 = boardController.main1(sources)
@@ -22,8 +23,8 @@ const main = (sources) => {
     moveHistory: moveHistory1.initialState
   })
 
-  const board$ = state$.map(({ board }) => board)
-  const moveHistory$ = state$.map(({ moveHistory }) => moveHistory)
+  const board$ = delocalizeState('board', state$)
+  const moveHistory$ = delocalizeState('moveHistory', state$)
 
   const board2 = boardController.main2({ board$ })
   const moveHistory2 = moveHistoryController.main2({ moveHistory$ })
