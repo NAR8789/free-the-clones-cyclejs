@@ -14,7 +14,7 @@ export const board = {
         [true, false] ]
 
     return {
-      propagation$,
+      propagation$, // not usually returned with stateProgression, but move-history is interested in this stream
       reducer$,
       initialState,
     }
