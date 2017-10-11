@@ -28,3 +28,17 @@
 .square.pebble {
   color: rgba(255, 0, 0, 0.5);
 }
+
+#free-the-clones .container {
+  display: grid;
+  grid-template-columns: 7em 100%;
+  grid-template-areas: "moves board";
+}
+
+.board {
+  grid-area: board;
+}
+
+.moves-list {
+  grid-area: moves;
+}
