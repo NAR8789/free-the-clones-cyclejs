@@ -5,7 +5,7 @@ import { boardPresenter } from 'board/presenter'
 import { boardDOM } from 'board/view'
 
 export const board = {
-  main1: (sources) => {
+  stateProgression: (sources) => {
     const propagationClick$ = getPropagationClick$(sources.DOM)
     const propagation$ = propagationClick$.map(propagation)
     const reducer$ = propagation$.map(propagate)
@@ -19,7 +19,7 @@ export const board = {
       initialState,
     }
   },
-  main2: (states) => {
+  viewProgression: (states) => {
     const boardPresenter$ = states.state$.map(boardPresenter)
     const boardDOM$ = boardPresenter$.map(boardDOM)
 

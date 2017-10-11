@@ -4,26 +4,26 @@ import { makeDOMDriver } from '@cycle/dom'
 
 import { mergeMutationBundles, localizeMutationBundle, delocalizeStates } from 'state-helpers'
 
-import { board as boardController } from 'board'
-import { moveHistory as moveHistoryController } from 'move-history'
+import { board } from 'board'
+import { moveHistory } from 'move-history'
 
 import { combinedDOM } from 'view'
 
 const freeTheClones = {
-  main1: (sources) => {
-    const board1 = boardController.main1(sources)
-    const moveHistory1 = moveHistoryController.main1(board1)
+  stateProgression: (sources) => {
+    const boardStateProgression = board.stateProgression(sources)
+    const moveHistoryStateProgression = moveHistory.stateProgression(boardStateProgression)
 
     return mergeMutationBundles(
-      localizeMutationBundle(board1, 'board'),
-      localizeMutationBundle(moveHistory1, 'moveHistory')
+      localizeMutationBundle(boardStateProgression, 'board'),
+      localizeMutationBundle(moveHistoryStateProgression, 'moveHistory')
     )
   },
-  main2: (state) => {
-    const board2 = boardController.main2(delocalizeStates('board', state))
-    const moveHistory2 = moveHistoryController.main2(delocalizeStates('moveHistory', state))
+  viewProgression: (state) => {
+    const boardViewProgression = board.viewProgression(delocalizeStates('board', state))
+    const moveHistoryViewProgression = moveHistory.viewProgression(delocalizeStates('moveHistory', state))
 
-    const combinedDOM$ = xs.combine(board2.DOM, moveHistory2.DOM)
+    const combinedDOM$ = xs.combine(boardViewProgression.DOM, moveHistoryViewProgression.DOM)
       .map(combinedDOM).remember()
 
     return {
@@ -33,9 +33,9 @@ const freeTheClones = {
 }
 
 const main = (sources) => {
-  const { reducer$, initialState } = freeTheClones.main1(sources)
+  const { reducer$, initialState } = freeTheClones.stateProgression(sources)
   const state$ = reducer$.fold((board, reducer) => reducer(board), initialState)
-  return freeTheClones.main2({ state$ })
+  return freeTheClones.viewProgression({ state$ })
 }
 
 const drivers = {
