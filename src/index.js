@@ -2,7 +2,7 @@ import xs from 'xstream'
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
 
-import { mergeMutationBundles, localizeMutationBundle, delocalizeStates } from 'state-helpers'
+import { mergeStateProgressions, localizeStateProgression, delocalizeStates } from 'state-helpers'
 
 import { board } from 'board'
 import { moveHistory } from 'move-history'
@@ -14,9 +14,9 @@ const freeTheClones = {
     const boardStateProgression = board.stateProgression(sources)
     const moveHistoryStateProgression = moveHistory.stateProgression(boardStateProgression)
 
-    return mergeMutationBundles(
-      localizeMutationBundle(boardStateProgression, 'board'),
-      localizeMutationBundle(moveHistoryStateProgression, 'moveHistory')
+    return mergeStateProgressions(
+      localizeStateProgression(boardStateProgression, 'board'),
+      localizeStateProgression(moveHistoryStateProgression, 'moveHistory')
     )
   },
   viewProgression: (state) => {
