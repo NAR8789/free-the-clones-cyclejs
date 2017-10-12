@@ -16,3 +16,10 @@ export const localizeComponent = (namespace) => ({ initialState, stateProgressio
     viewProgression: (states) => viewProgression(delocalizeStates(namespace)(states)),
   }
 }
+
+export const cyclifyComponent = ({ initialState, stateProgression, viewProgression }) =>
+  (sources) => {
+    const { reducer$ } = stateProgression(sources)
+    const state$ = reducer$.fold((board, reducer) => reducer(board), initialState)
+    return viewProgression({ state$ })
+  }

@@ -36,14 +36,8 @@ const freeTheClones = {
   }
 }
 
-const main = (sources) => {
-  const { reducer$ } = freeTheClones.stateProgression(sources)
-  const state$ = reducer$.fold((board, reducer) => reducer(board), freeTheClones.initialState)
-  return freeTheClones.viewProgression({ state$ })
-}
-
 const drivers = {
   DOM: makeDOMDriver('#free-the-clones'),
 }
 
-run(main, drivers)
+run(cyclifyComponent(freeTheClones), drivers)
