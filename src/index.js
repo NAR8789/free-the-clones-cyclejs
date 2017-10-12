@@ -1,12 +1,9 @@
 import xs from 'xstream'
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
-
-import { localizeComponent } from 'state-helpers'
-
+import { localizeComponent, cyclifyComponent } from 'state-helpers'
 import { board as boardUnlocalized } from 'board'
 import { moveHistory as moveHistoryUnlocalized } from 'move-history'
-
 import { combinedDOM } from 'view'
 
 const board = localizeComponent('board')(boardUnlocalized)
@@ -18,7 +15,7 @@ const freeTheClones = {
     ...moveHistory.initialState,
   },
   stateProgression: (sources) => {
-    const { propagationIntent$, reducer$: boardReducer$ } = board.stateProgression(sources)
+    const { reducer$: boardReducer$, propagationIntent$ } = board.stateProgression(sources)
     const { reducer$: moveHistoryReducer$ } = moveHistory.stateProgression({ propagationIntent$ })
 
     return { reducer$: xs.merge(boardReducer$, moveHistoryReducer$) }
@@ -36,8 +33,4 @@ const freeTheClones = {
   }
 }
 
-const drivers = {
-  DOM: makeDOMDriver('#free-the-clones'),
-}
-
-run(cyclifyComponent(freeTheClones), drivers)
+run(cyclifyComponent(freeTheClones), { DOM: makeDOMDriver('#free-the-clones') })
