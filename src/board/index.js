@@ -19,7 +19,6 @@ export const board = {
     }
   },
   viewProgression: (state) => {
-    state.state$.subscribe({next: console.log})
     const boardPresenter$ = state.state$.map(boardPresenter)
     const boardDOM$ = boardPresenter$.map(boardDOM)
 
