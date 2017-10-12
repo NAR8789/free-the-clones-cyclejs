@@ -1,7 +1,7 @@
 .square {
   color: transparent;
-  border: solid lightgray;
-  border-width: 1px 0 0 1px;
+  margin: 0.5px;
+  background: white;
   font-size: 200%;
   height: 1em;
   width: 1em;
@@ -11,14 +11,6 @@
   display: inline-block;
   line-height: 1em;
   font-family: FontAwesome;
-}
-
-.row:last-of-type .square {
-  border-bottom-width: 1px;
-}
-
-.square:last-of-type {
-  border-right-width: 1px;
 }
 
 .square.pebble.clonable {
@@ -37,6 +29,8 @@
 
 .board {
   grid-area: board;
+  padding: 1px;
+  background-color: lightgray;
 }
 
 .moves-list {
