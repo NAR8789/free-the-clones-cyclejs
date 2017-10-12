@@ -9,8 +9,8 @@ import { moveHistory as moveHistoryUnlocalized } from 'move-history'
 
 import { combinedDOM } from 'view'
 
-const board = localizeComponent(boardUnlocalized, 'board')
-const moveHistory = localizeComponent(moveHistoryUnlocalized, 'moveHistory')
+const board = localizeComponent('board')(boardUnlocalized)
+const moveHistory = localizeComponent('moveHistory')(moveHistoryUnlocalized)
 
 const freeTheClones = {
   initialState: {
