@@ -29,7 +29,7 @@ const freeTheClones = {
 
     const combinedDOM$ =
       xs.combine(boardDOM$, moveHistoryDOM$)
-        .map(combinedDOM)
+        .map(([boardDOM, moveHistoryDOM]) => combinedDOM({boardDOM, moveHistoryDOM}))
         .remember()
 
     return { DOM: combinedDOM$ }
