@@ -1,6 +1,6 @@
 const localizeReducer$ = namespace => reducer$ => reducer$.map(localizeReducer(namespace))
 const localizeReducer = namespace => reducer => state => ({ ...state, [namespace]: reducer(state[namespace]) })
-const localizeStateProgression = (namespace) => ({reducer$, initialState, ...opts}) => ({
+const localizeStateProgression = (namespace) => ({reducer$, ...opts}) => ({
   reducer$: localizeReducer$(namespace)(reducer$),
   ...opts
 })
