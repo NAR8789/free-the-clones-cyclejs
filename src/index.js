@@ -2,39 +2,43 @@ import xs from 'xstream'
 import { run } from '@cycle/run'
 import { makeDOMDriver } from '@cycle/dom'
 
-import { mergeStateProgressions, localizeStateProgression, delocalizeStates } from 'state-helpers'
+import { localizeComponent } from 'state-helpers'
 
-import { board } from 'board'
-import { moveHistory } from 'move-history'
+import { board as boardUnlocalized } from 'board'
+import { moveHistory as moveHistoryUnlocalized } from 'move-history'
 
 import { combinedDOM } from 'view'
 
-const freeTheClones = {
-  stateProgression: (sources) => {
-    const boardStateProgression = board.stateProgression(sources)
-    const moveHistoryStateProgression = moveHistory.stateProgression(boardStateProgression)
+const board = localizeComponent(boardUnlocalized, 'board')
+const moveHistory = localizeComponent(moveHistoryUnlocalized, 'moveHistory')
 
-    return mergeStateProgressions(
-      localizeStateProgression(boardStateProgression, 'board'),
-      localizeStateProgression(moveHistoryStateProgression, 'moveHistory')
-    )
+const freeTheClones = {
+  initialState: {
+    ...board.initialState,
+    ...moveHistory.initialState,
+  },
+  stateProgression: (sources) => {
+    const { propagationIntent$, reducer$: boardReducer$ } = board.stateProgression(sources)
+    const { reducer$: moveHistoryReducer$ } = moveHistory.stateProgression({ propagationIntent$ })
+
+    return { reducer$: xs.merge(boardReducer$, moveHistoryReducer$) }
   },
   viewProgression: (state) => {
-    const boardViewProgression = board.viewProgression(delocalizeStates('board', state))
-    const moveHistoryViewProgression = moveHistory.viewProgression(delocalizeStates('moveHistory', state))
+    const boardDOM$ = board.viewProgression(state).DOM
+    const moveHistoryDOM$ = moveHistory.viewProgression(state).DOM
 
-    const combinedDOM$ = xs.combine(boardViewProgression.DOM, moveHistoryViewProgression.DOM)
-      .map(combinedDOM).remember()
+    const combinedDOM$ =
+      xs.combine(boardDOM$, moveHistoryDOM$)
+        .map(combinedDOM)
+        .remember()
 
-    return {
-      DOM: combinedDOM$
-    }
+    return { DOM: combinedDOM$ }
   }
 }
 
 const main = (sources) => {
-  const { reducer$, initialState } = freeTheClones.stateProgression(sources)
-  const state$ = reducer$.fold((board, reducer) => reducer(board), initialState)
+  const { reducer$ } = freeTheClones.stateProgression(sources)
+  const state$ = reducer$.fold((board, reducer) => reducer(board), freeTheClones.initialState)
   return freeTheClones.viewProgression({ state$ })
 }
 

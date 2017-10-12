@@ -5,26 +5,24 @@ import { boardPresenter } from 'board/presenter'
 import { boardDOM } from 'board/view'
 
 export const board = {
+  initialState:
+    [ [true, true],
+      [true, false] ],
   stateProgression: (sources) => {
     const propagationClick$ = getPropagationClick$(sources.DOM)
-    const propagation$ = propagationClick$.map(propagation)
-    const reducer$ = propagation$.map(propagate)
-    const initialState =
-      [ [true, true],
-        [true, false] ]
+    const propagationIntent$ = propagationClick$.map(propagation)
+    const reducer$ = propagationIntent$.map(propagate)
 
     return {
-      propagation$, // not usually returned with stateProgression, but move-history is interested in this stream
+      propagationIntent$, // not usually returned with stateProgression, but move-history is interested in this stream
       reducer$,
-      initialState,
     }
   },
-  viewProgression: (states) => {
-    const boardPresenter$ = states.state$.map(boardPresenter)
+  viewProgression: (state) => {
+    state.state$.subscribe({next: console.log})
+    const boardPresenter$ = state.state$.map(boardPresenter)
     const boardDOM$ = boardPresenter$.map(boardDOM)
 
-    return {
-      DOM: boardDOM$
-    }
+    return { DOM: boardDOM$ }
   }
 }

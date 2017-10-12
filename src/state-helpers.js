@@ -1,14 +1,18 @@
-import { merge } from 'lodash'
-import xs from 'xstream'
+const localizeReducer$ = namespace => reducer$ => reducer$.map(localizeReducer(namespace))
+const localizeReducer = namespace => reducer => state => ({ ...state, [namespace]: reducer(state[namespace]) })
+const localizeStateProgression = (namespace) => ({reducer$, initialState, ...opts}) => ({
+  reducer$: localizeReducer$(namespace)(reducer$),
+  ...opts
+})
+const delocalizeStates = (namespace) => ({ state$, ...opts }) => ({
+  state$: state$.map(({ [namespace]: subState }) => subState),
+  ...opts
+})
 
-const localizeReducer$ = (reducer$, namespace) => reducer$.map(localizeReducer(namespace))
-const localizeReducer = namespace => reducer => state => Object.assign(state, { [namespace]: reducer(state[namespace]) })
-export const localizeStateProgression = ({reducer$, initialState}, namespace) => ({
-  reducer$: localizeReducer$(reducer$, namespace),
-  initialState: { [namespace]: initialState },
-})
-export const mergeStateProgressions = (...stateProgressions) => ({
-  reducer$: xs.merge(...stateProgressions.map(({reducer$}) => reducer$)),
-  initialState: merge({}, ...stateProgressions.map(({initialState}) => initialState))
-})
-export const delocalizeStates = (namespace, { state$ }) => ({ state$: state$.map(({ [namespace]: subState }) => subState) })
+export const localizeComponent = ({ initialState, stateProgression, viewProgression }, namespace) => {
+  return {
+    initialState: { [namespace]: initialState },
+    stateProgression: (sources) => localizeStateProgression(namespace)(stateProgression(sources)),
+    viewProgression: (states) => viewProgression(delocalizeStates(namespace)(states)),
+  }
+}
