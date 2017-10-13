@@ -30,7 +30,6 @@ export const undoTree = (undoSelector, redoSelector) => (baseComponentUnlocalize
       ) }
     },
     viewProgression: (state) => {
-      state.state$.subscribe({next: console.log})
       const baseComponentDOM$ = baseComponent.viewProgression(state).DOM
       const withUndoControlsDOM$ = baseComponentDOM$.map(withUndoRedo(undoSelector, redoSelector))
       return { DOM: withUndoControlsDOM$ }
