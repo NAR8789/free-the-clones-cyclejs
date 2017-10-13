@@ -5,6 +5,7 @@ import { localizeComponent, cyclifyComponent } from 'state-helpers'
 import { board as boardUnlocalized } from 'board'
 import { moveHistory as moveHistoryUnlocalized } from 'move-history'
 import { combinedDOM } from 'view'
+import { undoTree } from 'undo-tree'
 
 const board = localizeComponent('board')(boardUnlocalized)
 const moveHistory = localizeComponent('moveHistory')(moveHistoryUnlocalized)
@@ -33,4 +34,6 @@ const freeTheClones = {
   }
 }
 
-run(cyclifyComponent(freeTheClones), { DOM: makeDOMDriver('#free-the-clones') })
+const undoableFreeTheClones = undoTree('#undo', '#redo')(freeTheClones)
+
+run(cyclifyComponent(undoableFreeTheClones), { DOM: makeDOMDriver('#free-the-clones') })

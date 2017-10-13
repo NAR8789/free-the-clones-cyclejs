@@ -24,7 +24,8 @@
 #free-the-clones .container {
   display: grid;
   grid-template-columns: 7em 100%;
-  grid-template-areas: "moves board";
+  grid-template-areas: "undo undo"
+                       "moves board";
 }
 
 .board {
@@ -39,4 +40,8 @@
 
 #move-history {
   grid-area: moves;
+}
+
+#undo-controls {
+  grid-area: undo;
 }
