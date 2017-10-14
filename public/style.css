@@ -24,7 +24,7 @@
 #free-the-clones .container {
   display: grid;
   grid-template-columns: 7em 100%;
-  grid-template-areas: "undo undo"
+  grid-template-areas: "undo  board"
                        "moves board";
 }
 
