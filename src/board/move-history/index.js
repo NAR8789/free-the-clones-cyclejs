@@ -1,5 +1,5 @@
-import { recordMove } from 'move-history/mutation'
-import { moveHistoryDOM } from 'move-history/view'
+import { recordMove } from './mutation'
+import { moveHistoryDOM } from './view'
 
 export const moveHistory = {
   initialState: [],
