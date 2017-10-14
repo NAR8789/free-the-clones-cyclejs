@@ -3,7 +3,7 @@ import { localizeComponent } from 'state-helpers'
 import { undo, redo, regularDo } from 'undo-tree/mutation'
 import { withUndoRedo } from 'undo-tree/view'
 
-export const undoTree = (undoSelector, redoSelector) => (baseComponentUnlocalized) => {
+export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnlocalized) => {
   const baseComponent = localizeComponent('currentBaseState')(baseComponentUnlocalized)
 
   return {

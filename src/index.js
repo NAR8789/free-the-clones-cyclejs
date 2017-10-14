@@ -1,18 +1,16 @@
 import { run } from '@cycle/rxjs-run'
 import { makeDOMDriver } from '@cycle/dom'
 import { cyclifyComponent } from 'state-helpers'
-import { containerDiv } from 'view-helpers'
+import { withContainerDiv } from 'view-helpers'
 import { board } from 'board'
 import { withMoveHistory } from 'board/with-move-history'
-import { undoTree } from 'undo-tree'
+import { withUndoTree } from 'undo-tree'
 
 run(
   cyclifyComponent(
-    containerDiv('.container')(
-      undoTree('#undo', '#redo')(
-        withMoveHistory(
-          board
-        )
+    withContainerDiv('.container')(
+      withUndoTree('#undo', '#redo')(
+        withMoveHistory(board)
       )
     )
   ),
