@@ -13,7 +13,7 @@ const delocalizeStates = (namespace) => ({ state$, ...opts }) => ({
 
 export const localizeComponent = (namespace) => ({ initialState, stateProgression, viewProgression }) => {
   return {
-    initialState: { [namespace]: initialState },
+    initialState: typeof initialState === 'undefined' ? {} : { [namespace]: initialState },
     stateProgression: (sources) => localizeStateProgression(namespace)(stateProgression(sources)),
     viewProgression: (states) => viewProgression(delocalizeStates(namespace)(states)),
   }
