@@ -1,4 +1,4 @@
-import Rx from 'rxjs/Rx'
+import { Observable } from 'rxjs/Rx'
 import { run } from '@cycle/rxjs-run'
 import { makeDOMDriver } from '@cycle/dom'
 import { localizeComponent, cyclifyComponent } from 'state-helpers'
@@ -8,7 +8,6 @@ import { moveHistory as moveHistoryUnlocalized } from 'board/move-history'
 import { combinedDOM } from 'view'
 import { undoTree } from 'undo-tree'
 
-const { Observable } = Rx
 const board = localizeComponent('board')(boardUnlocalized)
 const moveHistory = localizeComponent('moveHistory')(moveHistoryUnlocalized)
 
@@ -40,4 +39,4 @@ const freeTheClones = {
 
 const undoableFreeTheClones = undoTree('#undo', '#redo')(freeTheClones)
 
-run(cyclifyComponent(containerDiv('.container')(freeTheClones)), { DOM: makeDOMDriver('#free-the-clones') })
+run(cyclifyComponent(containerDiv('.container')(undoableFreeTheClones)), { DOM: makeDOMDriver('#free-the-clones') })

@@ -1,4 +1,4 @@
-import xs from 'xstream'
+import { Observable } from 'rxjs/Rx'
 import { localizeComponent } from 'state-helpers'
 import { undo, redo, regularDo } from 'undo-tree/mutation'
 import { withUndoRedo } from 'undo-tree/view'
@@ -23,7 +23,7 @@ export const undoTree = (undoSelector, redoSelector) => (baseComponentUnlocalize
       const undoReducer$ = undoClick$.map(undo)
       const redoReducer$ = redoClick$.map(redo)
 
-      return { reducer$: xs.merge(
+      return { reducer$: Observable.merge(
         undoReducer$,
         redoReducer$,
         regularDoReducer$,
