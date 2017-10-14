@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Rx'
 import { localizeComponent } from 'state-helpers'
 import { moveHistory as moveHistoryUnlocalized } from 'board/move-history'
-import { combineIndependent } from 'combine-independent'
+import { combineIndependent } from 'component-helpers'
 
 export const withMoveHistory = (boardUnlocalized) => {
   const board = localizeComponent('board')(boardUnlocalized)
