@@ -20,6 +20,8 @@ export const localizeComponent = (namespace) => ({ initialState, stateProgressio
 export const cyclifyComponent = ({ initialState, stateProgression, viewProgression }) =>
   (sources) => {
     const { reducer$ } = stateProgression(sources)
-    const state$ = reducer$.fold((board, reducer) => reducer(board), initialState)
+    const state$ = reducer$
+      .startWith(initialState)
+      .scan((board, reducer) => reducer(board))
     return viewProgression({ state$ })
   }
