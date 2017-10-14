@@ -27,9 +27,11 @@ const freeTheClones = {
     const moveHistoryDOM$ = moveHistory.viewProgression(state).DOM
 
     const combinedDOM$ =
-      Observable.combineLatest(boardDOM$, moveHistoryDOM$)
-        .map(([boardDOM, moveHistoryDOM]) => combinedDOM({boardDOM, moveHistoryDOM}))
-        .remember()
+      Observable.zip(
+        boardDOM$,
+        moveHistoryDOM$,
+        (boardDOM, moveHistoryDOM) => combinedDOM({boardDOM, moveHistoryDOM})
+      )
 
     return { DOM: combinedDOM$ }
   }
