@@ -2,6 +2,7 @@ import Rx from 'rxjs/Rx'
 import { run } from '@cycle/rxjs-run'
 import { makeDOMDriver } from '@cycle/dom'
 import { localizeComponent, cyclifyComponent } from 'state-helpers'
+import { containerDiv } from 'view-helpers'
 import { board as boardUnlocalized } from 'board'
 import { moveHistory as moveHistoryUnlocalized } from 'board/move-history'
 import { combinedDOM } from 'view'
@@ -39,4 +40,4 @@ const freeTheClones = {
 
 const undoableFreeTheClones = undoTree('#undo', '#redo')(freeTheClones)
 
-run(cyclifyComponent(board), { DOM: makeDOMDriver('#free-the-clones') })
+run(cyclifyComponent(containerDiv('.container')(freeTheClones)), { DOM: makeDOMDriver('#free-the-clones') })
