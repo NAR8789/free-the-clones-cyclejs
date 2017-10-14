@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs/Rx'
+
 const localizeReducer$ = namespace => reducer$ => reducer$.map(localizeReducer(namespace))
 const localizeReducer = namespace => reducer => state => ({ ...state, [namespace]: reducer(state[namespace]) })
 const localizeStateProgression = (namespace) => ({reducer$, ...opts}) => ({
@@ -19,9 +21,26 @@ export const localizeComponent = (namespace) => ({ initialState, stateProgressio
 
 export const cyclifyComponent = ({ initialState, stateProgression, viewProgression }) =>
   (sources) => {
-    const { reducer$ } = stateProgression(sources)
+    const { reducer$, ...preState } = stateProgression(sources)
     const state$ = reducer$
       .startWith(initialState)
       .scan((board, reducer) => reducer(board))
-    return viewProgression({ state$ })
+    return { preState, ...viewProgression({ state$ }) }
   }
+
+export const bicyclifyComponent = (cycleMain) => {
+  let viewProgressionResult
+  return {
+    stateProgression: (sources) => {
+      const { preState, ...sinks } = cycleMain(sources)
+      viewProgressionResult = sinks
+      return {
+        ...preState,
+        reducer$: Observable.empty()
+      }
+    },
+    viewProgression: (states) => viewProgressionResult
+  }
+}
+
+export const privatizeState = (component) => bicyclifyComponent(cyclifyComponent(component))

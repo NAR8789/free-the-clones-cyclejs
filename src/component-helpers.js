@@ -12,7 +12,7 @@ export const combineIndependent = (...components) => ({
     )
   }),
   viewProgression: sources => ({
-    DOM: Observable.zip(
+    DOM: Observable.combineLatest(
       ...components
         .map(component => component.viewProgression)
         .map(viewProgression => viewProgression(sources))
