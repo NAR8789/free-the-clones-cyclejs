@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs/Rx'
-import { keys, fromPairs } from 'ramda'
+import { concat, keys, fromPairs } from 'ramda'
 import { localizeState } from 'state-helpers'
 import { undo, redo, snapshot } from 'undo-tree/mutation'
-import { withUndoRedo } from 'undo-tree/view'
+import { undoTreePresenter } from './presenter'
+import { undoControls } from 'undo-tree/view'
 
 export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnlocalized) => {
   const baseComponent = localizeState('currentBaseState')(baseComponentUnlocalized)
@@ -53,9 +54,15 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
       snapshotIntent$: [snapshot],
     },
     statesToViews: (state) => {
+      const undoTreePresenter$ = state.state$.map(undoTreePresenter)
+
       const baseComponentDOM$ = baseComponent.statesToViews(state).DOM
-      const withUndoControlsDOM$ = baseComponentDOM$.map(withUndoRedo(undoSelector, redoSelector))
-      return { DOM: withUndoControlsDOM$ }
+      const undoControlsDOM$ = undoTreePresenter$.map(undoControls(undoSelector, redoSelector))
+      return { DOM: Observable.combineLatest(
+        baseComponentDOM$,
+        undoControlsDOM$,
+        concat
+      )}
     }
   }
 }
