@@ -3,6 +3,7 @@ import { moveHistoryDOM } from './view'
 
 export const moveHistory = {
   initialState: [],
-  stateProgression: (sources) => ({ reducer$: sources.propagationIntent$.map(recordMove) }),
-  viewProgression: (state) => ({ DOM: state.state$.map(moveHistoryDOM) }),
+  sourcesToIntents: (_sources) => ({}),
+  intentsToReducers: { propagationIntent$: [recordMove] },
+  statesToViews: (state) => ({ DOM: state.state$.map(moveHistoryDOM) }),
 }

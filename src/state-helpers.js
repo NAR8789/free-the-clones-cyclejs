@@ -1,22 +1,18 @@
 import { Observable } from 'rxjs/Rx'
-import { compose, keys, intersection } from 'ramda'
+import { compose, keys, intersection, map } from 'ramda'
 
-const localizeReducer$ = namespace => reducer$ => reducer$.map(localizeReducer(namespace))
-const localizeReducer = namespace => reducer => state => ({ ...state, [namespace]: reducer(state[namespace]) })
-const localizeStateProgression = (namespace) => ({reducer$, ...opts}) => ({
-  reducer$: localizeReducer$(namespace)(reducer$),
-  ...opts
-})
+const localizeReducer = namespace => reducer => intent => state => ({ ...state, [namespace]: reducer(intent)(state[namespace]) })
 const delocalizeStates = (namespace) => ({ state$, ...opts }) => ({
   state$: state$.map(({ [namespace]: subState }) => subState),
   ...opts
 })
 
-export const localizeComponent = (namespace) => ({ initialState, stateProgression, viewProgression }) => {
+export const localizeState = (namespace) => ({ initialState, intentsToReducers, statesToViews, ...opts }) => {
   return {
     initialState: typeof initialState === 'undefined' ? {} : { [namespace]: initialState },
-    stateProgression: (sources) => localizeStateProgression(namespace)(stateProgression(sources)),
-    viewProgression: (states) => viewProgression(delocalizeStates(namespace)(states)),
+    intentsToReducers: map(map(localizeReducer(namespace)), intentsToReducers),
+    statesToViews: (states) => statesToViews(delocalizeStates(namespace)(states)),
+    ...opts
   }
 }
 
@@ -26,8 +22,8 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, intentsToRedu
     const reducer$s = intersection(keys(intent$s), keys(intentsToReducers))
       .map((intent$Name) => [intent$s[intent$Name], intentsToReducers[intent$Name]])
       .map(([intent$, reducers]) => intent$.map((intent) =>
-        compose(...
-          reducers.map(reducer => reducer(intent)) // remember that each reducer additionally takes a state and returns a state
+        compose(
+          ...reducers.map(reducer => reducer(intent)) // remember that each reducer additionally takes a state and returns a state
         ) // atomic state reducer of the composition of all state reducers for the given intent
       ))
     const reducer$ = Observable.merge(...reducer$s)

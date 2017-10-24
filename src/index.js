@@ -10,9 +10,9 @@ run(
   cyclifyComponent(
     withContainerDiv('.container')(
     //   withUndoTree('#undo', '#redo')(
-    //     withMoveHistory(
+        withMoveHistory(
           board
-    //     )
+        )
     //   )
     )
   ),
