@@ -28,14 +28,12 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, intentsToRedu
           ) // atomic state reducer of the composition of all state reducers for the given intent
         ]
       ))
-    const taggedReducer$ = Observable.merge(...taggedReducer$s)
-    taggedReducer$.subscribe(console.log)
+    const taggedReducer$ = Observable.merge(...taggedReducer$s) // useful for debugging
     const reducer$ = taggedReducer$.map(([intent$Name, reducer]) => reducer)
 
     const state$ = reducer$
       .startWith(initialState)
       .scan((board, reducer) => reducer(board))
-    state$.subscribe(console.log)
     return { ...statesToViews({ state$ }) }
   }
 

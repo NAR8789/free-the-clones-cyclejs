@@ -28,7 +28,6 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
             { intentName: 'dummyIntent$', intent: undefined },
           ])
         )
-      taggedUnifiedBaseIntent$.subscribe(console.log)
       const mapifiedIntent$s = fromPairs(
         ['snapshotIntent$', ...baseIntentNames].map(baseIntentName =>
           [baseIntentName,
@@ -37,14 +36,6 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
             ).map(({intent}) => intent)]
         )
       )
-
-      const taggedUnifiedBaseIntent$2 =
-        Observable.merge(
-          ...keys(mapifiedIntent$s).map(intentName =>
-            mapifiedIntent$s[intentName].map(intent => ({ intentName, intent }))
-          )
-        )
-      taggedUnifiedBaseIntent$2.subscribe(console.log)
 
       const undoIntent$ = sources.DOM.select(undoSelector).events('click')
       const redoIntent$ = sources.DOM.select(redoSelector).events('click')
