@@ -18,29 +18,29 @@ export const localizeState = (namespace) => ({ initialState, reducersForTag, sta
 
 export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTag, statesToViews }) =>
   (sources) => {
-    const taggedIntent$ = sourcesToIntents(sources)
-    const reducer$ = taggedIntent$.map(({ tag, intent }) =>
+    const intent$ = sourcesToIntents(sources)
+    const reducer$ = intent$.map(({ tag, intent }) =>
       compose(...reducersForTag[tag].map(reducer => reducer(intent)))
     )
 
     const state$ = reducer$
       .startWith(initialState)
       .scan((board, reducer) => reducer(board))
-    return { ...statesToViews({ state$ }) }
+    return { ...statesToViews({ state$ }), intent$ }
+    // returning the intent$ is not strictly necessary, but it's useful for allowing other components to hook
   }
 
 export const bicyclifyComponent = (cycleMain) => {
-  let viewProgressionResult
+  let view$s
   return {
-    stateProgression: (sources) => {
-      const { preState, ...sinks } = cycleMain(sources)
-      viewProgressionResult = sinks
-      return {
-        ...preState,
-        reducer$: Observable.empty()
-      }
+    initialState: {},
+    sourcesToIntents: (sources) => {
+      const { intent$, ...sinks } = cycleMain(sources)
+      view$s = sinks
+      return intent$
     },
-    viewProgression: (states) => viewProgressionResult
+    reducersForTag: {},
+    statesToViews: (states) => view$s
   }
 }
 
