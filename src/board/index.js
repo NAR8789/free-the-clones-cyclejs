@@ -1,3 +1,4 @@
+import { tagged } from 'intent-helpers'
 import { propagationClick$ as getPropagationClick$ } from 'board/event'
 import { propagation } from 'board/intent'
 import { propagate } from 'board/mutation'
@@ -12,12 +13,10 @@ export const board = {
     const propagationClick$ = getPropagationClick$(sources.DOM)
     const propagationIntent$ = propagationClick$.map(propagation)
 
-    return {
-      propagationIntent$,
-    }
+    return tagged('propagation', propagationIntent$)
   },
-  intentsToReducers: {
-    propagationIntent$: [propagate],
+  reducersForTag: {
+    propagation: [propagate],
   },
   statesToViews: (state) => {
     const boardPresenter$ = state.state$.map(boardPresenter)
