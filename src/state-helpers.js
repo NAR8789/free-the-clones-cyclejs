@@ -36,7 +36,6 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTa
 export const bicyclifyComponent = (cycleMain) => {
   let view$s
   return {
-    initialState: {},
     sourcesToIntents: (sources) => {
       const { intent$, ...sinks } = cycleMain(sources)
       view$s = sinks
