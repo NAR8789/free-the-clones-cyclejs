@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Rx'
-import { values } from 'ramda'
+import { keys, fromPairs } from 'ramda'
 import { localizeState } from 'state-helpers'
 import { undo, redo, snapshot } from 'undo-tree/mutation'
 import { withUndoRedo } from 'undo-tree/view'
@@ -15,21 +15,32 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
     },
     sourcesToIntents: (sources) => {
       const baseIntents = baseComponent.sourcesToIntents(sources)
-      const snapshotIntent$ = Observable.merge(...values(baseIntents))
-      // TODO: I think as written this still lacks order guarantees on when snapshot fires compared to other intents
-      // I think to ensure order, I need to generate a unified event stream, with snapshot intents inserted in the
-      // desired order, and then filter everything back out.
-      //
-      // Maybe I should just run with the selector metaphor, and generate tagged intents filterable by selectors?
-      // This would be more in line both with how cycle already works, and to be honest probably simplify the namespacing
-      // compared to the maps I'm using here.
+      const baseIntentNames = keys(baseIntents)
+      const taggedUnifiedBaseIntent$ =
+        Observable.merge(
+          ...baseIntentNames.map(intentName =>
+            baseIntents[intentName].map(intent => ({ intentName, intent }))
+          )
+        ).concatMap(
+          (taggedBaseIntent) => Observable.from([
+            { intentName: 'snapshotIntent$', intent: undefined },
+            taggedBaseIntent
+          ])
+        )
+      const mapifiedIntent$s = fromPairs(
+        [...baseIntentNames, 'snapshotIntent$'].map(baseIntentName =>
+          [baseIntentName,
+            taggedUnifiedBaseIntent$.filter(({intentName}) =>
+              intentName === baseIntentName
+            ).map(({intent}) => intent)]
+        )
+      )
 
       const undoIntent$ = sources.DOM.select(undoSelector).events('click')
       const redoIntent$ = sources.DOM.select(redoSelector).events('click')
 
       return {
-        ...baseIntents,
-        snapshotIntent$,
+        ...mapifiedIntent$s,
         undoIntent$,
         redoIntent$
       }
