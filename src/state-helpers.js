@@ -37,7 +37,7 @@ export const bicyclifyComponent = (cycleMain) => {
     sourcesToIntents: (sources) => {
       const { intent$, ...sinks } = cycleMain(sources)
       view$s = sinks
-      return intent$
+      return intent$ || Observable.empty()
     },
     reducersForTag: {},
     statesToViews: (states) => view$s
