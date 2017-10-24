@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Rx'
-import { unnest, merge, mergeWith, union } from 'ramda'
+import { concat, merge, mergeWith, union } from 'ramda'
 
 export const combineIndependent = (...components) => ({
   initialState: merge(...components.map(component => component.initialState)),
@@ -12,8 +12,8 @@ export const combineIndependent = (...components) => ({
       ...components
         .map(component => component.statesToViews)
         .map(statesToViews => statesToViews(sources))
-        .map(({DOM}) => DOM), // remember that DOM is a stream
-      (...DOMs) => unnest(DOMs)
+        .map(({DOM}) => DOM),
+      concat
     ),
   })
 })
