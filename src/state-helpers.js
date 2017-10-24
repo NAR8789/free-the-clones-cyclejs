@@ -19,9 +19,12 @@ export const localizeState = (namespace) => ({ initialState, reducersForTag, sta
 export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTag, statesToViews }) =>
   (sources) => {
     const intent$ = sourcesToIntents(sources)
-    const reducer$ = intent$.map(({ tag, intent }) =>
-      compose(...reducersForTag[tag].map(reducer => reducer(intent)))
-    )
+    const reducer$ = intent$
+      .map(({ tag, intent }) => [reducersForTag[tag], intent])
+      .filter(([reducers, intent]) => typeof reducers !== 'undefined')
+      .map(([reducers, intent]) =>
+        compose(...reducers.map(reducer => reducer(intent)))
+      )
 
     const state$ = reducer$
       .startWith(initialState)
