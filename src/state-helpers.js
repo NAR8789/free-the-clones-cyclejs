@@ -19,18 +19,23 @@ export const localizeState = (namespace) => ({ initialState, intentsToReducers, 
 export const cyclifyComponent = ({ initialState, sourcesToIntents, intentsToReducers, statesToViews }) =>
   (sources) => {
     const intent$s = sourcesToIntents(sources)
-    const reducer$s = intersection(keys(intent$s), keys(intentsToReducers))
-      .map((intent$Name) => [intent$s[intent$Name], intentsToReducers[intent$Name]])
-      .map(([intent$, reducers]) => intent$.map((intent) =>
-        compose(
-          ...reducers.map(reducer => reducer(intent)) // remember that each reducer additionally takes a state and returns a state
-        ) // atomic state reducer of the composition of all state reducers for the given intent
+    const taggedReducer$s = intersection(keys(intent$s), keys(intentsToReducers))
+      .map((intent$Name) => [intent$Name, intent$s[intent$Name], intentsToReducers[intent$Name]])
+      .map(([intent$Name, intent$, reducers]) => intent$.map((intent) =>
+        [ intent$Name,
+          compose(
+            ...reducers.map(reducer => reducer(intent)) // remember that each reducer additionally takes a state and returns a state
+          ) // atomic state reducer of the composition of all state reducers for the given intent
+        ]
       ))
-    const reducer$ = Observable.merge(...reducer$s)
+    const taggedReducer$ = Observable.merge(...taggedReducer$s)
+    taggedReducer$.subscribe(console.log)
+    const reducer$ = taggedReducer$.map(([intent$Name, reducer]) => reducer)
 
     const state$ = reducer$
       .startWith(initialState)
       .scan((board, reducer) => reducer(board))
+    state$.subscribe(console.log)
     return { ...statesToViews({ state$ }) }
   }
 

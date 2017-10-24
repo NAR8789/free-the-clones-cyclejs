@@ -27,6 +27,7 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
             taggedBaseIntent
           ])
         )
+      taggedUnifiedBaseIntent$.subscribe(console.log)
       const mapifiedIntent$s = fromPairs(
         [...baseIntentNames, 'snapshotIntent$'].map(baseIntentName =>
           [baseIntentName,
