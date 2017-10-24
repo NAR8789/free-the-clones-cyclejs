@@ -9,11 +9,11 @@ import { withUndoTree } from 'undo-tree'
 run(
   cyclifyComponent(
     withContainerDiv('.container')(
-    //   withUndoTree('#undo', '#redo')(
+      withUndoTree('#undo', '#redo')(
         withMoveHistory(
           board
         )
-    //   )
+      )
     )
   ),
   { DOM: makeDOMDriver('#free-the-clones') }

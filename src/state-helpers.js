@@ -27,7 +27,6 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, intentsToRedu
         ) // atomic state reducer of the composition of all state reducers for the given intent
       ))
     const reducer$ = Observable.merge(...reducer$s)
-    reducer$.subscribe(console.log)
 
     const state$ = reducer$
       .startWith(initialState)

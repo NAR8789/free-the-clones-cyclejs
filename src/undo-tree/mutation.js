@@ -1,4 +1,4 @@
-export const undo = (_emptyIntent) => (prevState) => {
+export const undo = (_intent) => (prevState) => {
   const {
     prevBaseStates: [prevBaseState, ...earlierBaseStates],
     currentBaseState,
@@ -14,7 +14,7 @@ export const undo = (_emptyIntent) => (prevState) => {
   }
 }
 
-export const redo = (_emptyIntent) => (prevState) => {
+export const redo = (_intent) => (prevState) => {
   const {
     prevBaseStates,
     currentBaseState,
@@ -30,8 +30,8 @@ export const redo = (_emptyIntent) => (prevState) => {
   }
 }
 
-export const regularDo = (baseComponentReducer) => ({prevBaseStates, currentBaseState, nextBaseStates}) => ({
+export const snapshot = (_intent) => ({prevBaseStates, currentBaseState, nextBaseStates}) => ({
   prevBaseStates: [currentBaseState, ...prevBaseStates],
-  ...baseComponentReducer({ currentBaseState }),
-  nextBaseStates: []
+  currentBaseState,
+  nextBaseStates: [],
 })
