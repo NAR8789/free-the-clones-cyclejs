@@ -1,7 +1,8 @@
 import { div } from '@cycle/dom'
 
-export const withContainerDiv = (sel) => ({initialState, stateProgression, viewProgression}) => ({
+export const withContainerDiv = (sel) => ({initialState, sourcesToIntents, intentsToReducers, statesToViews}) => ({
   initialState,
-  stateProgression,
-  viewProgression: state => ({ DOM: viewProgression(state).DOM.map(baseDOM => div(sel, baseDOM)) })
+  sourcesToIntents,
+  intentsToReducers,
+  statesToViews: state => ({ DOM: statesToViews(state).DOM.map(baseDOM => div(sel, baseDOM)) })
 })

@@ -8,17 +8,18 @@ export const board = {
   initialState:
     [ [true, true],
       [true, false] ],
-  stateProgression: (sources) => {
+  sourcesToIntents: (sources) => {
     const propagationClick$ = getPropagationClick$(sources.DOM)
     const propagationIntent$ = propagationClick$.map(propagation)
-    const reducer$ = propagationIntent$.map(propagate)
 
     return {
-      propagationIntent$, // not usually returned with stateProgression, but move-history is interested in this stream
-      reducer$,
+      propagationIntent$,
     }
   },
-  viewProgression: (state) => {
+  intentsToReducers: {
+    propagationIntent$: [propagate],
+  },
+  statesToViews: (state) => {
     const boardPresenter$ = state.state$.map(boardPresenter)
     const boardDOM$ = boardPresenter$.map(boardDOM)
 
