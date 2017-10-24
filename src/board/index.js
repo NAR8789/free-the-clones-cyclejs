@@ -5,10 +5,14 @@ import { propagate } from 'board/mutation'
 import { boardPresenter } from 'board/presenter'
 import { boardDOM } from 'board/view'
 
+const o = true
+const _ = false
+// board layout "DSL"
+
 export const board = {
   initialState:
-    [ [true, true],
-      [true, false] ],
+    [ [o, o],
+      [o, _] ],
   sourcesToIntents: (sources) => {
     const propagationClick$ = getPropagationClick$(sources.DOM)
     const propagationIntent$ = propagationClick$.map(propagation)
