@@ -19,16 +19,9 @@ export const localizeState = (namespace) => ({ initialState, reducersForTag, sta
 export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTag, statesToViews }) =>
   (sources) => {
     const taggedIntent$ = sourcesToIntents(sources)
-    const taggedReducer$ = taggedIntent$.map(({ tag, intent }) =>
-      ({
-        tag,
-        reducer: compose(
-          ...reducersForTag[tag].map(reducer => reducer(intent)) // remember that each reducer additionally takes a state and returns a state
-        ) // atomic state reducer of the composition of all state reducers for the given intent
-      })
+    const reducer$ = taggedIntent$.map(({ tag, intent }) =>
+      compose(...reducersForTag[tag].map(reducer => reducer(intent)))
     )
-    // taggedReducer$ is immediately mapped away, but useful for debugging
-    const reducer$ = taggedReducer$.map(({reducer}) => reducer)
 
     const state$ = reducer$
       .startWith(initialState)
