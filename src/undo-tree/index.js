@@ -24,18 +24,27 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
         ).concatMap(
           (taggedBaseIntent) => Observable.from([
             { intentName: 'snapshotIntent$', intent: undefined },
-            taggedBaseIntent
+            taggedBaseIntent,
+            { intentName: 'dummyIntent$', intent: undefined },
           ])
         )
       taggedUnifiedBaseIntent$.subscribe(console.log)
       const mapifiedIntent$s = fromPairs(
-        [...baseIntentNames, 'snapshotIntent$'].map(baseIntentName =>
+        ['snapshotIntent$', ...baseIntentNames].map(baseIntentName =>
           [baseIntentName,
             taggedUnifiedBaseIntent$.filter(({intentName}) =>
               intentName === baseIntentName
             ).map(({intent}) => intent)]
         )
       )
+
+      const taggedUnifiedBaseIntent$2 =
+        Observable.merge(
+          ...keys(mapifiedIntent$s).map(intentName =>
+            mapifiedIntent$s[intentName].map(intent => ({ intentName, intent }))
+          )
+        )
+      taggedUnifiedBaseIntent$2.subscribe(console.log)
 
       const undoIntent$ = sources.DOM.select(undoSelector).events('click')
       const redoIntent$ = sources.DOM.select(redoSelector).events('click')
