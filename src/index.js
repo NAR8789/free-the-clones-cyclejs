@@ -6,15 +6,15 @@ import { board } from 'board'
 import { withMoveHistory } from 'board/with-move-history'
 import { withUndoTree } from 'undo-tree'
 
-window.board = board 
+window.board = board
 
 run(
   cyclifyComponent(
     withContainerDiv('.container')(
       // withUndoTree('#undo', '#redo')(
-      //   withMoveHistory(
+        withMoveHistory(
           board
-      //   )
+        )
       // )
     )
   ),

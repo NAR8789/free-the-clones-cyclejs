@@ -7,18 +7,19 @@ const delocalizeStates = (namespace) => ({ state$, ...opts }) => ({
   ...opts
 })
 
-export const localizeState = (namespace) => ({ initialState, intentsToReducers, statesToViews, ...opts }) => {
+export const localizeState = (namespace) => ({ initialState, reducersForTag, statesToViews, ...rest }) => {
   return {
     initialState: typeof initialState === 'undefined' ? {} : { [namespace]: initialState },
-    intentsToReducers: map(map(localizeReducer(namespace)), intentsToReducers),
+    reducersForTag: map(map(localizeReducer(namespace)), reducersForTag),
     statesToViews: (states) => statesToViews(delocalizeStates(namespace)(states)),
-    ...opts
+    ...rest
   }
 }
 
 export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTag, statesToViews }) =>
   (sources) => {
     const taggedIntent$ = sourcesToIntents(sources)
+    taggedIntent$.subscribe(console.log)
     const taggedReducer$ = taggedIntent$.map(({ tag, intent }) =>
       ({
         tag,

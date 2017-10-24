@@ -4,9 +4,9 @@ import { unnest, merge, mergeWith, union } from 'ramda'
 export const combineIndependent = (...components) => ({
   initialState: merge(...components.map(component => component.initialState)),
   sourcesToIntents: sources => (
-    merge(...components.map((component) => component.sourcesToIntents(sources)))
+    Observable.merge(...components.map((component) => component.sourcesToIntents(sources)))
   ),
-  intentsToReducers: mergeWith(union, ...components.map(component => component.intentsToReducers)),
+  reducersForTag: mergeWith(union, ...components.map(component => component.reducersForTag)),
   statesToViews: sources => ({
     DOM: Observable.combineLatest(
       ...components
