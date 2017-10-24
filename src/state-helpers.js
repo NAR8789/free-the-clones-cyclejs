@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Rx'
-import { compose, keys, intersection, map } from 'ramda'
+import { compose, map } from 'ramda'
 
 const localizeReducer = namespace => reducer => intent => state => ({ ...state, [namespace]: reducer(intent)(state[namespace]) })
 const delocalizeStates = (namespace) => ({ state$, ...opts }) => ({
@@ -19,7 +19,6 @@ export const localizeState = (namespace) => ({ initialState, reducersForTag, sta
 export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTag, statesToViews }) =>
   (sources) => {
     const taggedIntent$ = sourcesToIntents(sources)
-    taggedIntent$.subscribe(console.log)
     const taggedReducer$ = taggedIntent$.map(({ tag, intent }) =>
       ({
         tag,
@@ -28,6 +27,7 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTa
         ) // atomic state reducer of the composition of all state reducers for the given intent
       })
     )
+    // taggedReducer$ is immediately mapped away, but useful for debugging
     const reducer$ = taggedReducer$.map(({reducer}) => reducer)
 
     const state$ = reducer$

@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Rx'
-import { concat, keys, fromPairs } from 'ramda'
+import { concat } from 'ramda'
 import { localizeState } from 'state-helpers'
 import { tagged } from 'intent-helpers'
 import { undo, redo, snapshot } from 'undo-tree/mutation'
