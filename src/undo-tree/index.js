@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Rx'
 import { concat, keys, fromPairs } from 'ramda'
 import { localizeState } from 'state-helpers'
+import { tagged } from 'intent-helpers'
 import { undo, redo, snapshot } from 'undo-tree/mutation'
 import { undoTreePresenter } from './presenter'
 import { undoControls } from 'undo-tree/view'
@@ -14,44 +15,23 @@ export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnloca
       ...baseComponent.initialState,
       nextBaseStates: []
     },
-    sourcesToIntents: (sources) => {
-      const baseIntents = baseComponent.sourcesToIntents(sources)
-      const baseIntentNames = keys(baseIntents)
-      const taggedUnifiedBaseIntent$ =
-        Observable.merge(
-          ...baseIntentNames.map(intentName =>
-            baseIntents[intentName].map(intent => ({ intentName, intent }))
-          )
-        ).concatMap(
+    sourcesToIntents: (sources) => Observable.merge(
+      baseComponent
+        .sourcesToIntents(sources)
+        .concatMap(
           (taggedBaseIntent) => Observable.from([
-            { intentName: 'snapshotIntent$', intent: undefined },
+            { tag: 'snapshot' },
             taggedBaseIntent,
-            { intentName: 'dummyIntent$', intent: undefined },
           ])
-        )
-      const mapifiedIntent$s = fromPairs(
-        ['snapshotIntent$', ...baseIntentNames].map(baseIntentName =>
-          [baseIntentName,
-            taggedUnifiedBaseIntent$.filter(({intentName}) =>
-              intentName === baseIntentName
-            ).map(({intent}) => intent)]
-        )
-      )
-
-      const undoIntent$ = sources.DOM.select(undoSelector).events('click')
-      const redoIntent$ = sources.DOM.select(redoSelector).events('click')
-
-      return {
-        ...mapifiedIntent$s,
-        undoIntent$,
-        redoIntent$
-      }
-    },
-    intentsToReducers: {
-      ...baseComponent.intentsToReducers,
-      undoIntent$: [undo],
-      redoIntent$: [redo],
-      snapshotIntent$: [snapshot],
+        ),
+      tagged('undo', sources.DOM.select(undoSelector).events('click')),
+      tagged('redo', sources.DOM.select(redoSelector).events('click')),
+    ),
+    reducersForTag: {
+      ...baseComponent.reducersForTag,
+      undo: [undo],
+      redo: [redo],
+      snapshot: [snapshot],
     },
     statesToViews: (state) => {
       const undoTreePresenter$ = state.state$.map(undoTreePresenter)
