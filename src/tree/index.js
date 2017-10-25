@@ -12,7 +12,16 @@ export const hasParent = ({parent}) => parent !== undefined && parent !== null
 export const addChild = (childVal) => ({parent, val, children}) =>
   ({parent, val, children: Z.insertOrCreate(from(childVal))(children)})
 
-export const up = ({parent: {parent, val, childrenPrev, childrenNext}, val: childVal, children: grandChildren}) => ({
+export const up = ({
+  parent: {
+    parent,
+    val,
+    childrenPrev,
+    childrenNext
+  },
+  val: childVal,
+  children: grandChildren
+}) => ({
   parent,
   val,
   children: {
@@ -22,8 +31,21 @@ export const up = ({parent: {parent, val, childrenPrev, childrenNext}, val: chil
   }
 })
 
-export const down = ({parent: grandParent, val: parentVal, children: {prev, current: {val, children}, next}}) => ({
-  parent: {parent: grandParent, val: parentVal, childrenPrev: prev, childrenNext: next},
+export const down = ({
+  parent: grandParent,
+  val: parentVal,
+  children: {
+    prev,
+    current: {val, children},
+    next
+  }
+}) => ({
+  parent: {
+    parent: grandParent,
+    val: parentVal,
+    childrenPrev: prev,
+    childrenNext: next
+  },
   val,
   children
 })
