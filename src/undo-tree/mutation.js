@@ -1,37 +1,10 @@
-export const undo = (_intent) => (prevState) => {
-  const {
-    prevBaseStates: [prevBaseState, ...earlierBaseStates],
-    currentBaseState,
-    nextBaseStates
-  } = prevState
+import * as Z from 'zipper'
 
-  if (typeof prevBaseState === 'undefined') { return prevState }
+export const undo = (_intent) => (undoZipper) =>
+  Z.hasPrev(undoZipper) ? Z.prev(undoZipper) : undoZipper
 
-  return {
-    prevBaseStates: earlierBaseStates,
-    currentBaseState: prevBaseState,
-    nextBaseStates: [currentBaseState, ...nextBaseStates]
-  }
-}
+export const redo = (_intent) => (undoZipper) =>
+  Z.hasNext(undoZipper) ? Z.next(undoZipper) : undoZipper
 
-export const redo = (_intent) => (prevState) => {
-  const {
-    prevBaseStates,
-    currentBaseState,
-    nextBaseStates: [nextBaseState, ...laterBaseStates]
-  } = prevState
-
-  if (typeof nextBaseState === 'undefined') { return prevState }
-
-  return {
-    prevBaseStates: [currentBaseState, ...prevBaseStates],
-    currentBaseState: nextBaseState,
-    nextBaseStates: laterBaseStates
-  }
-}
-
-export const snapshot = (_intent) => ({prevBaseStates, currentBaseState, nextBaseStates}) => ({
-  prevBaseStates: [currentBaseState, ...prevBaseStates],
-  currentBaseState,
-  nextBaseStates: [],
-})
+export const snapshot = (_intent) => (undoZipper) =>
+  Z.insert(undoZipper.current)(undoZipper)

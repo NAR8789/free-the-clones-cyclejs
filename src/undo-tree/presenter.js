@@ -1,6 +1,8 @@
+import * as Z from 'zipper'
+
 export const undoTreePresenter = (undoTree) => {
-  const undoable = undoTree.prevBaseStates.length > 0
-  const redoable = undoTree.nextBaseStates.length > 0
+  const undoable = Z.hasPrev(undoTree)
+  const redoable = Z.hasNext(undoTree)
   const undoDisabled = undoable ? false : 'true'
   const redoDisabled = redoable ? false : 'true'
 
