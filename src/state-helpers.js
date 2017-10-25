@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Rx'
-import { compose, map } from 'ramda'
+import { pipe, map } from 'ramda'
 
 const localizeReducer = namespace => reducer => intent => state => ({ ...state, [namespace]: reducer(intent)(state[namespace]) })
 const delocalizeStates = (namespace) => ({ state$, ...opts }) => ({
@@ -23,7 +23,7 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTa
       .map(({ tag, intent }) => [reducersForTag[tag], intent])
       .filter(([reducers, intent]) => typeof reducers !== 'undefined')
       .map(([reducers, intent]) =>
-        compose(...reducers.map(reducer => reducer(intent)))
+        pipe(...reducers.map(reducer => reducer(intent)))
       )
 
     const state$ = reducer$
