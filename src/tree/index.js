@@ -16,8 +16,7 @@ export const up = ({
   parent: {
     parent,
     val,
-    childrenPrev,
-    childrenNext
+    children: { prev, next }
   },
   val: childVal,
   children: grandChildren
@@ -25,9 +24,9 @@ export const up = ({
   parent,
   val,
   children: {
-    prev: childrenPrev,
+    prev,
     current: { val: childVal, children: grandChildren },
-    next: childrenNext,
+    next,
   }
 })
 
@@ -36,15 +35,14 @@ export const down = ({
   val: parentVal,
   children: {
     prev,
-    current: {val, children},
+    current: { val, children },
     next
   }
 }) => ({
   parent: {
     parent: grandParent,
     val: parentVal,
-    childrenPrev: prev,
-    childrenNext: next
+    children: { prev, next }
   },
   val,
   children
