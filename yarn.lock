@@ -4245,7 +4245,7 @@ write@^0.2.1:
   dependencies:
     mkdirp "^0.5.1"
 
-"xstream@10.x || 11.x", xstream@^11.0.0:
+"xstream@10.x || 11.x":
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/xstream/-/xstream-11.0.0.tgz#2018c3c4e573f76b62b9cf96a17a46876ab120e0"
   dependencies:
