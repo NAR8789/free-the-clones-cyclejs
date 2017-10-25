@@ -59,3 +59,9 @@ export const insert = (val) => pipe(
 ) // (tree)
 
 export const toRoot = (tree) => hasParent(tree) ? toRoot(up(tree)) : tree
+
+export const hasNextChild = (tree) => hasChildren(tree) && Z.hasNext(tree.children)
+export const hasPrevChild = (tree) => hasChildren(tree) && Z.hasPrev(tree.children)
+
+export const nextChild = ({parent, val, children}) => ({parent, val, children: Z.next(children)})
+export const prevChild = ({parent, val, children}) => ({parent, val, children: Z.prev(children)})

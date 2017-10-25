@@ -10,7 +10,7 @@ import { withUndoTree } from 'undo-tree'
 const main = compose(
   cyclifyComponent,
   withContainerDiv('.container'),
-  withUndoTree('#undo', '#redo'),
+  withUndoTree('#undo', '#redo', '#next', '#prev'),
   withMoveHistory
 )(board)
 
