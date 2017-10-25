@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@cycle/dom": "^18.3.0",
+    "@cycle/dom": "^19.2.0",
     "@cycle/run": "^3.3.0",
     "@cycle/rxjs-run": "^7.1.0",
     "ramda": "^0.25.0",
