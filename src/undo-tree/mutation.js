@@ -1,3 +1,4 @@
+import { pipe } from 'ramda'
 import * as Z from 'zipper'
 
 export const undo = (_intent) => (undoZipper) =>
@@ -7,4 +8,7 @@ export const redo = (_intent) => (undoZipper) =>
   Z.hasNext(undoZipper) ? Z.next(undoZipper) : undoZipper
 
 export const snapshot = (_intent) => (undoZipper) =>
-  Z.insert(undoZipper.current)(undoZipper)
+  pipe(
+    Z.insert(undoZipper.current),
+    Z.clearNext
+  )(undoZipper)

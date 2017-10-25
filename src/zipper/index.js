@@ -27,3 +27,5 @@ export const insertRight = (val) => ({prev, current, next}) => ({
 })
 
 export const from = (val) => ({prev: [], current: val, next: []})
+
+export const clearNext = ({prev, current, next}) => ({prev, current, next: []})
