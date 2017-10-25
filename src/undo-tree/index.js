@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Rx'
 import { concat } from 'ramda'
-import * as Z from 'zipper'
+import * as T from 'tree'
 import { localizeState } from 'state-helpers'
 import { tagged } from 'intent-helpers'
 import { undo, redo, snapshot } from 'undo-tree/mutation'
@@ -8,10 +8,10 @@ import { undoTreePresenter } from './presenter'
 import { undoControls } from 'undo-tree/view'
 
 export const withUndoTree = (undoSelector, redoSelector) => (baseComponentUnlocalized) => {
-  const baseComponent = localizeState('current')(baseComponentUnlocalized)
+  const baseComponent = localizeState('val')(baseComponentUnlocalized)
 
   return {
-    initialState: Z.from(baseComponent.initialState.current),
+    initialState: T.from(baseComponent.initialState.val),
     sourcesToIntents: (sources) => Observable.merge(
       baseComponent
         .sourcesToIntents(sources)

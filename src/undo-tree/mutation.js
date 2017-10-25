@@ -1,14 +1,10 @@
-import { pipe } from 'ramda'
-import * as Z from 'zipper'
+import * as T from 'tree'
 
-export const undo = (_intent) => (undoZipper) =>
-  Z.hasPrev(undoZipper) ? Z.prev(undoZipper) : undoZipper
+export const undo = (_intent) => (undoTree) =>
+  T.hasParent(undoTree) ? T.up(undoTree) : undoTree
 
-export const redo = (_intent) => (undoZipper) =>
-  Z.hasNext(undoZipper) ? Z.next(undoZipper) : undoZipper
+export const redo = (_intent) => (undoTree) =>
+  T.hasChildren(undoTree) ? T.down(undoTree) : undoTree
 
-export const snapshot = (_intent) => (undoZipper) =>
-  pipe(
-    Z.insert(undoZipper.current),
-    Z.clearNext
-  )(undoZipper)
+export const snapshot = (_intent) => (undoTree) =>
+  T.insert(undoTree.val)(undoTree)

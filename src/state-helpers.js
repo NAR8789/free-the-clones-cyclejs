@@ -29,8 +29,8 @@ export const cyclifyComponent = ({ initialState, sourcesToIntents, reducersForTa
     const state$ = reducer$
       .startWith(initialState)
       .scan((board, reducer) => reducer(board))
-    return { ...statesToViews({ state$ }), intent$ }
-    // returning the intent$ is not strictly necessary, but it's useful for allowing other components to hook
+    return { ...statesToViews({ state$ }), intent$, state$ }
+    // returning the intent$ and state$ breaks abstraction, but is useful for hooking and debugging
   }
 
 export const bicyclifyComponent = (cycleMain) => {
